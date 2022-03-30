@@ -1,0 +1,2 @@
+Time:2022/3/30 下午 09:21:39 Message:System.Exception: 未經授權驗證
+   於 UploadHelper.MainForm.Form1_Load(Object sender, EventArgs e) 於 D:\Github\Demo\UploadHelper\MainApp\MainForm.cs: 行 93
