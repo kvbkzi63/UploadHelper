@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,13 +25,12 @@ namespace UploadHelper
         private MyFormBase _waitForm;
         private AuthModel auth = null;
         private TokenModel token = null;
-        private ScanerHook listener = new ScanerHook();
-
+        private ScanerHook listener = new ScanerHook(); 
         public MainForm()
         {
             InitializeComponent();
             ECHelper.Instance.KillProcess();
-            listener.ScanerEvent += Listener_ScanerEventAsync;
+            listener.ScanerEvent += Listener_ScanerEventAsync; 
             listener.Start();
         }
         private async void Listener_ScanerEventAsync(ScanerHook.ScanerCodes codes)
@@ -42,14 +42,15 @@ namespace UploadHelper
                 ECHelper.Instance.WriteLog("Listener_ScanerEventAsync :" + codes.Result);
                 if (codes.Result.StartsWith("finish"))
                 {
-                    string finish = await ECHelper.Instance.PickupOrderItems(codes.Result.Replace("finish", ""), token.content.token);
-                    MessageBox.Show(finish);  
-                } else if (codes.Result.StartsWith("query"))
-                {
-                    string query = await ECHelper.Instance.QueryOrderStatus(codes.Result.Replace("query", ""), token.content.token);
-                    MessageBox.Show(query);
+                    string finish = await ECHelper.Instance.PickupOrderItems(codes.Result.Replace("finish", ""), token.content.token); 
+                    MessageBoxTimeout.Show(finish, "本視窗兩秒後自動關閉", 2000);
                 }
-            }
+                else if (codes.Result.StartsWith("query"))
+                {
+                    string query = await ECHelper.Instance.QueryOrderStatus(codes.Result.Replace("query", ""), token.content.token); 
+                    MessageBoxTimeout.Show(query, "本視窗十秒後自動關閉", 10000);
+                }
+            } 
         }
 
         /// <summary>
@@ -118,7 +119,7 @@ namespace UploadHelper
             backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
             backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
         }
-        private void Form1_SizeChanged(object sender, EventArgs e)
+        private void Form1_SizeChanged(Object sender, System.EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
             {
@@ -177,12 +178,12 @@ namespace UploadHelper
             {
                 e.Cancel = true;
                 this.WindowState = FormWindowState.Minimized;
-                notifyIcon1.Tag = string.Empty;
-                notifyIcon1.ShowBalloonTip(3000, this.Text,
+                this.notifyIcon1.Visible = true; 
+                this.notifyIcon1.ShowBalloonTip(10000, this.Text,
                      "程式並未結束，要結束請在圖示上按右鍵，選取結束功能!",
                      ToolTipIcon.Info);
             }
-        }
+        } 
         #region     登陸檢核
         protected void ShowWaitForm(string message)
         {

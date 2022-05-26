@@ -11,8 +11,7 @@ namespace UploadHelper.Helper
     public class ScanerHook
     {
         public delegate void ScanerDelegate(ScanerCodes codes);
-        public event ScanerDelegate ScanerEvent;
-
+        public event ScanerDelegate ScanerEvent; 
         //private const int WM_KEYDOWN = 0x100;//KEYDOWN
         //private const int WM_KEYUP = 0x101;//KEYUP
         //private const int WM_SYSKEYDOWN = 0x104;//SYSKEYDOWN
@@ -89,11 +88,15 @@ namespace UploadHelper.Helper
 
             EventMsg msg = (EventMsg)Marshal.PtrToStructure(lParam, typeof(EventMsg));
             codes.Add(msg);
- 
+
             if (ScanerEvent != null && msg.message == 13 && msg.paramH > 0 && !string.IsNullOrEmpty(codes.Result))
             {
                 ScanerEvent(codes);
             }
+            //else if (true)
+            //{
+            //    ScanerEvent(codes);
+            //}
             return CallNextHookEx(hKeyboardHook, nCode, wParam, lParam);
         }
         public class ScanerCodes

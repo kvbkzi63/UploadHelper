@@ -45,7 +45,15 @@ namespace MainApp.Helper
                     p.Kill();
                 }
             }
-        } 
+        }
+        public bool SetAutoRun()
+        {
+            // 新增到 所有使用者的 登錄檔啟動項
+            RegistryKey RKey = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
+            if (RKey.GetValue("UploadHelper") == null)
+                RKey.SetValue("UploadHelper", Application.StartupPath + "\\UploadHelper.exe"); 
+            return true;
+        }
         public void CreateUploadFolder(string uploadPath)
         { 
             if (!System.IO.Directory.Exists(uploadPath))
